@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block title %}Inicio - Dashboard{% endblock %}
+
+{% block content %}
+<h2>📊 Panel de control</h2>
+<p>Bienvenido, <strong>{{ user.username }}</strong></p>
+
+<div style="display: flex; flex-wrap: wrap; gap: 20px; margin-top: 20px;">
+    <div style="background:#0078d7;color:white;padding:20px;border-radius:8px;flex:1;min-width:220px;transition:0.3s;">
+        <h3>Total de Productos</h3>
+        <p style="font-size: 24px;">{{ total_productos }}</p>
+    </div>
+    <div style="background:#28a745;color:white;padding:20px;border-radius:8px;flex:1;min-width:220px;transition:0.3s;">
+        <h3>Con Stock</h3>
+        <p style="font-size: 24px;">{{ productos_con_stock }}</p>
+    </div>
+    <div style="background:#dc3545;color:white;padding:20px;border-radius:8px;flex:1;min-width:220px;transition:0.3s;">
+        <h3>Sin Stock</h3>
+        <p style="font-size: 24px;">{{ productos_sin_stock }}</p>
+    </div>
+    <div style="background:#ffc107;color:black;padding:20px;border-radius:8px;flex:1;min-width:220px;transition:0.3s;">
+        <h3>En Oferta</h3>
+        <p style="font-size: 24px;">{{ productos_en_oferta }}</p>
+    </div>
+</div>
+
+{% if promedio_precio %}
+    <div style="margin-top:30px;">
+        <h3>💰 Suma total de precios normales:</h3>
+        <p style="font-size:20px;">${{ promedio_precio|floatformat:2 }}</p>
+    </div>
+{% endif %}
+
+<!-- Contenedor del gráfico -->
+<div style="margin-top:40px; text-align:center;">
+    <h3>📈 Distribución del Inventario</h3>
+    <div style="display:inline-block; width:350px; height:350px;">
+        <canvas id="chartProductos"></canvas>
+    </div>
+</div>
+
+<!-- Carga Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<!-- Script del gráfico -->
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const ctx = document.getElementById('chartProductos').getContext('2d');
+
+    new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Con Stock', 'Sin Stock', 'En Oferta'],
+            datasets: [{
+                label: 'Distribución de Productos',
+                data: [
+                    {{ productos_con_stock|default:0 }},
+                    {{ productos_sin_stock|default:0 }},
+                    {{ productos_en_oferta|default:0 }}
+                ],
+                backgroundColor: ['#28a745', '#dc3545', '#ffc107'],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom'
+                }
+            }
+        }
+    });
+});
+</script>
+
+{% endblock %}

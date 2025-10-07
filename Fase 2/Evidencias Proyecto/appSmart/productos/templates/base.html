@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Inventario{% endblock %}</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+        }
+        header {
+            background-color: #0078d7;
+            color: white;
+            padding: 12px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        header h1 {
+            font-size: 20px;
+            margin: 0;
+        }
+        nav {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        nav a, nav button {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        nav a:hover, nav button:hover {
+            text-decoration: underline;
+        }
+        .content {
+            padding: 20px;
+        }
+        span.user {
+            font-weight: normal;
+            margin-right: 10px;
+        }
+        form.logout-form {
+            display: inline;
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Inventario Web</h1>
+        <nav>
+            {% if user.is_authenticated %}
+                <span class="user">👋 {{ user.username }}</span>
+                <a href="{% url 'dashboard' %}">Inicio</a>
+                <a href="{% url 'productos' %}">Productos</a>
+                <form action="{% url 'logout' %}" method="post" class="logout-form">
+                    {% csrf_token %}
+                    <button type="submit">Cerrar sesión</button>
+                </form>
+            {% else %}
+                <a href="{% url 'login' %}">Iniciar sesión</a>
+            {% endif %}
+        </nav>
+    </header>
+
+    <div class="content">
+        {% block content %}
+        {% endblock %}
+    </div>
+</body>
+</html>
