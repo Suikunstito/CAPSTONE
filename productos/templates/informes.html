@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block title %}Informes{% endblock %}
+
+{% block content %}
+<section style="max-width:900px;margin:0 auto 28px;background:#ffffff;border-radius:24px;padding:32px 36px;border:1px solid #e3e8f3;box-shadow:0 18px 36px rgba(16,20,24,0.06);">
+  <h2 style="margin:0 0 12px;font-size:30px;font-weight:800;color:#0b2e68;">Centro de informes</h2>
+  <p style="margin:0 0 18px;color:#4c566a;font-size:14px;">
+    Descarga los resultados del modelo predictivo para planificar compras y detectar sobrestock en Santa Isabel.
+  </p>
+
+  <div style="display:flex;flex-wrap:wrap;gap:18px;margin-bottom:28px;">
+    <article style="flex:1;min-width:200px;background:#f8faff;border-radius:18px;padding:18px 20px;border:1px solid #e3e8f3;">
+      <h3 style="margin:0 0 4px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:#5b6578;">Total evaluado</h3>
+      <p style="margin:0;font-size:28px;font-weight:800;color:#0b2e68;">{{ predicciones_resumen.total }}</p>
+      <span style="font-size:12px;color:#5b6578;">Productos incluidos en el analisis.</span>
+    </article>
+    <article style="flex:1;min-width:200px;background:#f2fbf6;border-radius:18px;padding:18px 20px;border:1px solid #d7f0e2;">
+      <h3 style="margin:0 0 4px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:#3a7f55;">Sugerencias de compra</h3>
+      <p style="margin:0;font-size:28px;font-weight:800;color:#256c3d;">{{ predicciones_resumen.sugerencias }}</p>
+      <span style="font-size:12px;color:#3a7f55;">Recomendadas para reposicion.</span>
+    </article>
+    <article style="flex:1;min-width:200px;background:#fff5f5;border-radius:18px;padding:18px 20px;border:1px solid #f3c8c8;">
+      <h3 style="margin:0 0 4px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:#a63a3a;">Alertas de sobrestock</h3>
+      <p style="margin:0;font-size:28px;font-weight:800;color:#a63a3a;">{{ predicciones_resumen.sobrestock }}</p>
+      <span style="font-size:12px;color:#a63a3a;">Productos con compras sugeridas en pausa.</span>
+    </article>
+  </div>
+
+  <div style="display:flex;flex-direction:column;gap:16px;background:#ffffff;border-radius:18px;border:1px dashed #b9c6dd;padding:22px;">
+    <div style="display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;">
+      <div>
+        <h3 style="margin:0;font-size:18px;font-weight:700;color:#0b2e68;">Descargas disponibles</h3>
+        <p style="margin:4px 0 0;font-size:12px;color:#5b6578;">
+          Genera reportes listos para compartir con el equipo de abastecimiento y control de inventario.
+        </p>
+      </div>
+      <span style="font-size:12px;color:#98a2b3;">Generado: {{ predicciones_resumen.fecha_generacion|date:"d/m/Y H:i" }}</span>
+    </div>
+
+    <div style="display:grid;gap:14px;grid-template-columns:repeat(auto-fit, minmax(260px, 1fr));">
+      <div style="border:1px solid #e3e8f3;border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:10px;">
+        <div>
+          <strong style="display:block;font-size:14px;color:#0b2e68;">Reporte de compras sugeridas</strong>
+          <span style="font-size:12px;color:#5b6578;">Listado de productos que el modelo recomienda reponer, con cantidades sugeridas y precio de referencia.</span>
+        </div>
+        <a
+          href="{% url 'reporte_compras_csv' %}"
+          style="display:inline-flex;align-items:center;gap:8px;background:#0b6cff;color:#ffffff;padding:10px 16px;border-radius:12px;font-weight:700;text-decoration:none;width:max-content;"
+        >
+          Descargar reporte
+        </a>
+        {% if not hay_sugerencias %}
+          <span style="font-size:11px;color:#98a2b3;">Actualmente no hay sugerencias activas; el archivo incluira una nota informativa.</span>
+        {% endif %}
+      </div>
+
+      <div style="border:1px solid #e3e8f3;border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:10px;">
+        <div>
+          <strong style="display:block;font-size:14px;color:#0b2e68;">Resumen de stock estimado</strong>
+          <span style="font-size:12px;color:#5b6578;">Vista consolidada de disponibilidad, stock estimado y precios para cada producto del catalogo.</span>
+        </div>
+        <a
+          href="{% url 'reporte_stock_csv' %}"
+          style="display:inline-flex;align-items:center;gap:8px;background:#1f9d55;color:#ffffff;padding:10px 16px;border-radius:12px;font-weight:700;text-decoration:none;width:max-content;"
+        >
+          Descargar resumen
+        </a>
+        {% if not hay_resumen_stock %}
+          <span style="font-size:11px;color:#98a2b3;">No hay datos de productos para generar el resumen de stock.</span>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

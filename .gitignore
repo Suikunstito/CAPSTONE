@@ -1,0 +1,30 @@
+# Python / Django
+__pycache__/
+*.py[cod]
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+pip-wheel-metadata/
+
+# Virtual environments
+env/
+.venv/
+venv/
+
+# PyCharm / VSCode / Editors
+.idea/
+.vscode/
+
+# Django collectstatic
+staticfiles/
+
+# Local environment
+.env
+
+# Logs / misc
+*.log
+*.sqlite3
+*.db
+*.bak

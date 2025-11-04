@@ -1,0 +1,264 @@
+{% extends "base.html" %}
+{% block title %}{{ accion }}{% endblock %}
+{% block content %}
+<style>
+  body {
+    background: linear-gradient(180deg, #f4f6fb 0%, #e7ecf9 100%);
+  }
+
+  .wrapper {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: clamp(24px, 6vw, 48px);
+  }
+
+  .form-shell {
+    display: flex;
+    align-items: stretch;
+    justify-content: center;
+  }
+
+  .form-card {
+    width: 100%;
+    background: #fff;
+    border-radius: 26px;
+    padding: clamp(32px, 5vw, 56px);
+    box-shadow: 0 26px 52px rgba(12, 35, 75, 0.12);
+    display: flex;
+    flex-direction: column;
+    gap: clamp(24px, 4vw, 36px);
+  }
+
+  .form-header h1 {
+    margin: 0;
+    font-size: clamp(28px, 3vw, 34px);
+    font-weight: 800;
+    color: #0b2e68;
+  }
+
+  .form-header p {
+    margin: 8px 0 0;
+    color: #5b6578;
+    font-size: 15px;
+  }
+
+  .form-alert {
+    padding: 14px 16px;
+    border-radius: 12px;
+    background: rgba(192, 0, 0, 0.08);
+    border: 1px solid rgba(192, 0, 0, 0.28);
+    color: #921414;
+    font-weight: 600;
+    font-size: 14px;
+  }
+
+  .product-form {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .form-grid {
+    display: grid;
+    gap: 22px;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  }
+
+  .form-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .form-field label {
+    font-size: 14px;
+    font-weight: 700;
+    color: #344055;
+  }
+
+  .product-form input[type="text"],
+  .product-form input[type="number"],
+  .product-form input[type="email"],
+  .product-form input[type="password"],
+  .product-form textarea,
+  .product-form select {
+    width: 100%;
+    padding: 12px 14px;
+    border-radius: 12px;
+    border: 1px solid #d5dbea;
+    background: #f8faff;
+    font-size: 15px;
+    color: #101418;
+    transition: border 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+  }
+
+  .product-form input:focus,
+  .product-form textarea:focus,
+  .product-form select:focus {
+    outline: none;
+    border-color: #0b6cff;
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(11, 108, 255, 0.12);
+  }
+
+  .form-field--checkbox {
+    padding: 14px 16px;
+    border-radius: 16px;
+    border: 1px dashed #d5dbea;
+    background: #f6f8fc;
+    align-items: center;
+    grid-column: span 1;
+  }
+
+  .form-field--checkbox label {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    margin: 0;
+    font-weight: 600;
+  }
+
+  .form-field--checkbox input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: #0b6cff;
+  }
+
+  .form-field--checkbox.has-error {
+    border-color: #c00000;
+    background: #fff4f4;
+  }
+
+  .form-field--checkbox.has-error label span {
+    color: #c00000;
+  }
+
+  .form-field.has-error input,
+  .form-field.has-error select,
+  .form-field.has-error textarea {
+    border-color: #c00000;
+    background: #fff4f4;
+  }
+
+  .field-error {
+    font-size: 13px;
+    color: #c00000;
+    font-weight: 600;
+  }
+
+  .form-help {
+    color: #707a8f;
+    font-size: 12px;
+  }
+
+  .form-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    justify-content: flex-end;
+  }
+
+  .btn-primary {
+    padding: 12px 22px;
+    border-radius: 12px;
+    background: #0b6cff;
+    color: #fff;
+    font-weight: 700;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+  }
+
+  .btn-primary:hover {
+    background: #0a5cd7;
+    box-shadow: 0 16px 28px rgba(11, 92, 216, 0.22);
+    transform: translateY(-1px);
+  }
+
+  .btn-secondary {
+    padding: 12px 18px;
+    border-radius: 12px;
+    font-weight: 600;
+    color: #0b2e68;
+    background: #f1f4fb;
+    text-decoration: none;
+    transition: background 0.18s ease, color 0.18s ease;
+  }
+
+  .btn-secondary:hover {
+    background: #e2e7f5;
+    color: #09224e;
+  }
+
+  @media (max-width: 640px) {
+    .form-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .form-field--checkbox {
+      grid-column: span 1;
+    }
+
+    .form-actions {
+      justify-content: stretch;
+    }
+
+    .form-actions .btn-primary,
+    .form-actions .btn-secondary {
+      width: 100%;
+      text-align: center;
+    }
+  }
+</style>
+
+<section class="form-shell">
+  <div class="form-card">
+    <div class="form-header">
+      <h1>{{ accion }}</h1>
+      <p>Completa los datos clave del producto para mantener tu inventario actualizado y listo para el analisis.</p>
+    </div>
+
+    {% if form.errors %}
+      <div class="form-alert">Revisa los campos resaltados para continuar.</div>
+    {% endif %}
+
+    <form method="post" class="product-form" novalidate>
+      {% csrf_token %}
+      <div class="form-grid">
+        {% for field in form %}
+          {% if field.field.widget.input_type == 'checkbox' %}
+            <div class="form-field form-field--checkbox{% if field.errors %} has-error{% endif %}">
+              <label for="{{ field.id_for_label }}">
+                {{ field }}
+                <span>{{ field.label }}</span>
+              </label>
+              {% if field.errors %}
+                <span class="field-error">{{ field.errors|striptags }}</span>
+              {% endif %}
+            </div>
+          {% else %}
+            <div class="form-field{% if field.errors %} has-error{% endif %}">
+              <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+              {{ field }}
+              {% if field.help_text %}
+                <small class="form-help">{{ field.help_text }}</small>
+              {% endif %}
+              {% if field.errors %}
+                <span class="field-error">{{ field.errors|striptags }}</span>
+              {% endif %}
+            </div>
+          {% endif %}
+        {% endfor %}
+      </div>
+
+      <div class="form-actions">
+        <a href="{% url 'productos' %}" class="btn-secondary">Cancelar</a>
+        <button type="submit" class="btn-primary">Guardar producto</button>
+      </div>
+    </form>
+  </div>
+</section>
+{% endblock %}
