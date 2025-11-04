@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Eliminar Producto - SmartERP{% endblock %}
+{% block content %}
+<h2>🗑️ Confirmar Eliminación</h2>
+<p>¿Seguro que quieres eliminar este producto?</p>
+<div style="background:#f8f9fa;padding:15px;border-left:4px solid #dc3545;margin:20px 0;">
+    <strong>{{ producto.title }}</strong><br>
+    <small>Marca: {{ producto.brand|default:"Sin marca" }} | Precio: ${{ producto.normal_price|floatformat:2|default:"N/A" }}</small>
+</div>
+
+<form method="post">
+    {% csrf_token %}
+    <button type="submit" style="background:#dc3545;color:white;padding:8px 12px;border:none;border-radius:4px;">🗑️ Eliminar Producto</button>
+    <a href="{% url 'productos' %}" style="margin-left:10px;text-decoration:none;color:#0078d7;">Cancelar</a>
+</form>
+{% endblock %}

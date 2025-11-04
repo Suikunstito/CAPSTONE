@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}Iniciar Sesión - SmartERP{% endblock %}
+
+{% block content %}
+<div style="max-width: 400px; margin: 50px auto; text-align: center;">
+    <h2>🔐 Iniciar Sesión</h2>
+    <p>Accede al sistema SmartERP</p>
+    
+    <form method="post" style="background:#fff;padding:30px;border-radius:8px;box-shadow:0 2px 10px rgba(0,0,0,0.1);">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" style="background:#0078d7;color:white;padding:12px 24px;border:none;border-radius:4px;width:100%;font-size:16px;">
+            Entrar al Sistema
+        </button>
+    </form>
+
+    {% if form.errors %}
+        <div style="color:#dc3545;background:#f8d7da;padding:10px;border-radius:4px;margin-top:15px;">
+            ❌ Usuario o contraseña incorrectos.
+        </div>
+    {% endif %}
+</div>
+
+{% if messages %}
+    {% for message in messages %}
+        <div style="color:#28a745;background:#d4edda;padding:10px;border-radius:4px;margin:15px auto;max-width:400px;">
+            ✅ {{ message }}
+        </div>
+    {% endfor %}
+{% endif %}
+{% endblock %}

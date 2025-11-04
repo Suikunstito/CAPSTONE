@@ -1,11 +1,19 @@
+"""
+URLs principales del proyecto SmartERP - Arquitectura modular
+Migrado de estructura monolítica a apps por dominio
+"""
 from django.contrib import admin
 from django.urls import path, include
-from django.contrib.auth import views as auth_views
-from productos.views import CustomLoginView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('productos.urls')),  # Incluye las rutas de tu app
-    path('login/', CustomLoginView.as_view(), name='login'),  # ✅ vista personalizada
-    path('logout/', auth_views.LogoutView.as_view(next_page='login'), name='logout'),
+    
+    # Rutas por dominio (nueva arquitectura modular)
+    path('', include('inventory.urls')),        # Dashboard en raíz
+    path('', include('catalog.urls')),          # CRUD productos (/productos/)
+    path('', include('users.urls')),            # Auth (/login/, /logout/)
+    path('', include('sales.urls')),            # Ventas (futuro)
+    
+    # Compatibilidad: mantener estructura de URLs original
+    # path('', include('productos.urls')),  # ❌ REMOVIDO tras migración
 ]

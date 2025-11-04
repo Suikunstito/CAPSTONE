@@ -1,7 +1,9 @@
 
 from pathlib import Path
 import os
+from dotenv import load_dotenv
 
+load_dotenv()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -10,9 +12,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-p5zbjum!u&)rw=6vcw9_qx5^-7#(+q!el#c9d#-kcxzt50&5!0'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv("DEBUG", "False") == "True"
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "*").split(",")
 
 
 # Application definition
@@ -24,7 +26,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'productos'
+    
+    # Apps SmartERP - Arquitectura modular por dominio
+    'users',           # Autenticación y roles
+    'catalog',         # Productos y categorías  
+    'inventory',       # Inventario y dashboard
+    'sales',           # Ventas y transacciones
+    
+    # 'productos',     # ❌ REMOVIDO tras migración completa
 ]
 
 MIDDLEWARE = [
@@ -70,15 +79,24 @@ WSGI_APPLICATION = 'inventario_web.wsgi.application'
 
 
 
+# Configuración original de SQL Server (comentada para testing)
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'mssql',
+#         'NAME': 'inventario',
+#         'HOST': 'DESKTOP-AU48ANV',     # tu servidor
+#         'OPTIONS': {
+#             'driver': 'ODBC Driver 17 for SQL Server',
+#             'trusted_connection': 'yes',
+#         },
+#     }
+# }
+
+# Configuración temporal para testing (SQLite)
 DATABASES = {
     'default': {
-        'ENGINE': 'mssql',
-        'NAME': 'inventario',
-        'HOST': 'DESKTOP-AU48ANV',     # tu servidor
-        'OPTIONS': {
-            'driver': 'ODBC Driver 17 for SQL Server',
-            'trusted_connection': 'yes',
-        },
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db_temp.sqlite3',
     }
 }
 # Password validation
