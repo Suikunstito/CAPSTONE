@@ -1,0 +1,118 @@
+# SmartERP - Docker Compose para Desarrollo
+# Este archivo define los servicios que necesita tu aplicación
+# Usar: docker-compose up para desarrollo
+
+version: '3.8'
+
+services:
+  # =================================================================
+  # SmartERP Web Application - Servicio Principal
+  # =================================================================
+  smarterp:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: development  # Usa stage de desarrollo
+    
+    container_name: smarterp_dev
+    
+    # Puertos: HOST:CONTAINER
+    ports:
+      - "8000:8000"  # Django dev server
+    
+    # Volúmenes para desarrollo (hot reload)
+    volumes:
+      - .:/app                          # Código fuente (edición en tiempo real)
+      - smarterp_media:/app/media       # Archivos de usuario
+      - smarterp_static:/app/staticfiles # Archivos estáticos
+    
+    # Variables de entorno
+    environment:
+      - DJANGO_ENVIRONMENT=development
+      - DJANGO_DEBUG=True
+      - DB_HOST=host.docker.internal    # Conectar a SQL Server del host
+    
+    # Archivo de configuración
+    env_file:
+      - .env.development
+    
+    # Dependencias (opcional - si usamos SQL Server en Docker)
+    # depends_on:
+    #   - sqlserver
+    
+    # Comando personalizado para desarrollo
+    command: >
+      sh -c "
+        echo 'Esperando a que la base de datos esté disponible...' &&
+        python manage.py check &&
+        echo 'Iniciando servidor de desarrollo SmartERP...' &&
+        python manage.py runserver 0.0.0.0:8000
+      "
+    
+    # Reiniciar automáticamente si falla
+    restart: unless-stopped
+    
+    # Redes
+    networks:
+      - smarterp_network
+
+  # =================================================================
+  # SQL Server (Opcional - si quieres todo en Docker)
+  # =================================================================
+  # Descomenta si quieres SQL Server también en Docker
+  # sqlserver:
+  #   image: mcr.microsoft.com/mssql/server:2022-latest
+  #   container_name: smarterp_sqlserver
+  #   
+  #   environment:
+  #     ACCEPT_EULA: Y
+  #     MSSQL_SA_PASSWORD: SmartERP2024!
+  #     MSSQL_PID: Developer
+  #   
+  #   ports:
+  #     - "1433:1433"
+  #   
+  #   volumes:
+  #     - sqlserver_data:/var/opt/mssql
+  #   
+  #   networks:
+  #     - smarterp_network
+
+  # =================================================================
+  # Redis (Opcional - para cache y sesiones)
+  # =================================================================
+  redis:
+    image: redis:7-alpine
+    container_name: smarterp_redis
+    
+    ports:
+      - "6379:6379"
+    
+    volumes:
+      - redis_data:/data
+    
+    command: redis-server --appendonly yes
+    
+    networks:
+      - smarterp_network
+
+# =================================================================
+# Volúmenes Persistentes
+# =================================================================
+volumes:
+  smarterp_media:
+    name: smarterp_media
+  smarterp_static:
+    name: smarterp_static
+  redis_data:
+    name: smarterp_redis_data
+  # sqlserver_data:
+  #   name: smarterp_sqlserver_data
+
+# =================================================================
+# Redes
+# =================================================================
+networks:
+  smarterp_network:
+    name: smarterp_network
+    driver: bridge

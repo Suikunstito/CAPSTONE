@@ -1,0 +1,15 @@
+# Dependencias de producción para SmartERP
+-r base.txt
+
+# Servidor de producción
+gunicorn==21.2.0
+
+# Seguridad
+django-cors-headers==4.3.1
+
+# Monitoreo y logs
+sentry-sdk==1.38.0
+
+# Performance
+redis==5.0.1
+django-redis==5.4.0

@@ -1,0 +1,64 @@
+# SmartERP - .dockerignore
+# Archivos y directorios que NO se copian al contenedor Docker
+
+# Entornos virtuales locales
+venv_smarterp/
+venv/
+env/
+ENV/
+
+# Configuración local
+.env.local
+.env.*.local
+
+# Archivos de desarrollo
+.git/
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+
+# Django
+db.sqlite3
+db.sqlite3-journal
+/staticfiles/
+/media/
+
+# Testing
+.coverage
+.pytest_cache/
+htmlcov/
+.tox/
+
+# OS
+.DS_Store
+Thumbs.db
+*~
+
+# Scripts de setup local (no necesarios en contenedor)
+scripts/*.bat
+
+# Logs
+*.log
+logs/
+
+# Node modules
+node_modules/
+
+# Documentación
+README.md
+docs/
+*.md
+
+# Docker
+Dockerfile
+docker-compose*.yml
+.dockerignore

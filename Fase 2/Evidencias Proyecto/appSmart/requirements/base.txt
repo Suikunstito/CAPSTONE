@@ -1,0 +1,18 @@
+# Dependencias base para SmartERP
+asgiref==3.10.0
+Django==5.2.7
+mssql-django==1.6
+pyodbc==5.2.0
+python-dateutil==2.9.0.post0
+pytz==2025.2
+sqlparse==0.5.3
+tzdata==2025.2
+
+# Dependencias ML y análisis de datos
+numpy==2.3.4
+pandas==2.3.3
+
+# Utilidades
+six==1.17.0
+typing_extensions==4.15.0
+wheel==0.45.1

@@ -1,0 +1,1 @@
+# SmartERP - Sistema Modular de Inventario Django

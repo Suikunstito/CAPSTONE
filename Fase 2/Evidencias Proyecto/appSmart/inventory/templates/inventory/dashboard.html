@@ -1,0 +1,368 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - SmartERP{% endblock %}
+
+{% block page_title %}
+    <i class="bi bi-speedometer2"></i> Dashboard
+{% endblock %}
+
+{% block page_actions %}
+    <div class="btn-toolbar mb-2 mb-md-0">
+        <div class="btn-group me-2">
+            <button type="button" class="btn btn-sm btn-outline-secondary" onclick="window.print()">
+                <i class="bi bi-printer"></i> Imprimir
+            </button>
+            <button type="button" class="btn btn-sm btn-outline-secondary" onclick="exportarDatos()">
+                <i class="bi bi-download"></i> Exportar
+            </button>
+        </div>
+        <button type="button" class="btn btn-sm btn-primary" onclick="location.reload()">
+            <i class="bi bi-arrow-clockwise"></i> Actualizar
+        </button>
+    </div>
+{% endblock %}
+
+{% block content %}
+<!-- Stats Cards -->
+<div class="row g-3 mb-4">
+    <!-- Total Productos -->
+    <div class="col-md-3">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="text-muted mb-2">Total Productos</h6>
+                        <h2 class="mb-0">{{ total_productos|default:0 }}</h2>
+                    </div>
+                    <div class="text-primary">
+                        <i class="bi bi-box-seam" style="font-size: 2.5rem;"></i>
+                    </div>
+                </div>
+                <div class="mt-2">
+                    <span class="badge bg-primary">100%</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Con Stock -->
+    <div class="col-md-3">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="text-muted mb-2">Con Stock</h6>
+                        <h2 class="mb-0 text-success">{{ productos_con_stock|default:0 }}</h2>
+                    </div>
+                    <div class="text-success">
+                        <i class="bi bi-check-circle-fill" style="font-size: 2.5rem;"></i>
+                    </div>
+                </div>
+                <div class="mt-2">
+                    {% widthratio productos_con_stock total_productos 100 as porcentaje_stock %}
+                    <span class="badge bg-success">{{ porcentaje_stock|default:0 }}%</span>
+                    <small class="text-muted">del inventario</small>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Sin Stock -->
+    <div class="col-md-3">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="text-muted mb-2">Sin Stock</h6>
+                        <h2 class="mb-0 text-danger">{{ productos_sin_stock|default:0 }}</h2>
+                    </div>
+                    <div class="text-danger">
+                        <i class="bi bi-exclamation-triangle-fill" style="font-size: 2.5rem;"></i>
+                    </div>
+                </div>
+                <div class="mt-2">
+                    {% if productos_sin_stock > 0 %}
+                        <span class="badge bg-danger">
+                            <i class="bi bi-arrow-up"></i> Requiere atención
+                        </span>
+                    {% else %}
+                        <span class="badge bg-secondary">Sin alertas</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- En Oferta -->
+    <div class="col-md-3">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="text-muted mb-2">En Oferta</h6>
+                        <h2 class="mb-0 text-warning">{{ productos_oferta|default:0 }}</h2>
+                    </div>
+                    <div class="text-warning">
+                        <i class="bi bi-tag-fill" style="font-size: 2.5rem;"></i>
+                    </div>
+                </div>
+                <div class="mt-2">
+                    <span class="badge bg-warning text-dark">
+                        <i class="bi bi-percent"></i> Ofertas activas
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Charts Row -->
+<div class="row g-3 mb-4">
+    <!-- Stock Distribution Chart -->
+    <div class="col-md-4">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white">
+                <h5 class="mb-0"><i class="bi bi-pie-chart"></i> Distribución de Stock</h5>
+            </div>
+            <div class="card-body">
+                <canvas id="stockChart" height="250"></canvas>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Top Categories Chart -->
+    <div class="col-md-4">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white">
+                <h5 class="mb-0"><i class="bi bi-bar-chart"></i> Top Categorías</h5>
+            </div>
+            <div class="card-body">
+                <canvas id="categoriesChart" height="250"></canvas>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Top Brands Chart -->
+    <div class="col-md-4">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white">
+                <h5 class="mb-0"><i class="bi bi-graph-up"></i> Top Marcas</h5>
+            </div>
+            <div class="card-body">
+                <canvas id="brandsChart" height="250"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Tables Row -->
+<div class="row g-3 mb-4">
+    <!-- Recent Products -->
+    <div class="col-md-6">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                <h5 class="mb-0"><i class="bi bi-clock-history"></i> Productos Recientes</h5>
+                <a href="{% url 'catalog:lista_productos' %}" class="btn btn-sm btn-outline-primary">
+                    Ver todos <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Producto</th>
+                                <th>Marca</th>
+                                <th>Precio</th>
+                                <th>Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for producto in productos_recientes %}
+                            <tr>
+                                <td>{{ producto.title|truncatewords:5 }}</td>
+                                <td>{{ producto.brand|default:"-" }}</td>
+                                <td class="fw-bold">${{ producto.normal_price|floatformat:0 }}</td>
+                                <td>
+                                    {% if producto.sin_stock %}
+                                        <span class="badge bg-danger">Sin stock</span>
+                                    {% else %}
+                                        <span class="badge bg-success">Disponible</span>
+                                    {% endif %}
+                                    {% if producto.oferta %}
+                                        <span class="badge bg-warning text-dark">Oferta</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="4" class="text-center text-muted py-3">
+                                    No hay productos registrados
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Stats Summary -->
+    <div class="col-md-6">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white">
+                <h5 class="mb-0"><i class="bi bi-info-circle"></i> Resumen de Precios</h5>
+            </div>
+            <div class="card-body">
+                <div class="list-group list-group-flush">
+                    <div class="list-group-item d-flex justify-content-between align-items-center border-0 px-0">
+                        <span><i class="bi bi-currency-dollar text-success"></i> Precio Promedio</span>
+                        <strong class="text-success">${{ precios_stats.precio_promedio|floatformat:0|default:"0" }}</strong>
+                    </div>
+                    <div class="list-group-item d-flex justify-content-between align-items-center border-0 px-0">
+                        <span><i class="bi bi-arrow-up-circle text-danger"></i> Precio Máximo</span>
+                        <strong class="text-danger">${{ precios_stats.precio_max|floatformat:0|default:"0" }}</strong>
+                    </div>
+                    <div class="list-group-item d-flex justify-content-between align-items-center border-0 px-0">
+                        <span><i class="bi bi-arrow-down-circle text-primary"></i> Precio Mínimo</span>
+                        <strong class="text-primary">${{ precios_stats.precio_min|floatformat:0|default:"0" }}</strong>
+                    </div>
+                </div>
+                
+                <hr class="my-3">
+                
+                <div class="alert alert-info mb-0" role="alert">
+                    <h6 class="alert-heading">
+                        <i class="bi bi-lightbulb"></i> Predicciones IA
+                    </h6>
+                    <p class="mb-0">
+                        Sistema de predicción de demanda próximamente disponible.
+                        <a href="{% url 'inventory:predicciones' %}" class="alert-link">Más información</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Actions -->
+<div class="row g-3">
+    <div class="col-12">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title mb-3"><i class="bi bi-lightning"></i> Acciones Rápidas</h5>
+                <div class="d-flex gap-2 flex-wrap">
+                    <a href="{% url 'catalog:crear_producto' %}" class="btn btn-primary">
+                        <i class="bi bi-plus-circle"></i> Nuevo Producto
+                    </a>
+                    <a href="{% url 'catalog:lista_productos' %}?stock=sin_stock" class="btn btn-outline-danger">
+                        <i class="bi bi-exclamation-triangle"></i> Ver Sin Stock
+                    </a>
+                    <a href="{% url 'catalog:lista_productos' %}?oferta=true" class="btn btn-outline-warning">
+                        <i class="bi bi-tag"></i> Ver Ofertas
+                    </a>
+                    <a href="{% url 'inventory:movimientos' %}" class="btn btn-outline-info">
+                        <i class="bi bi-arrow-left-right"></i> Movimientos
+                    </a>
+                    <a href="{% url 'inventory:predicciones' %}" class="btn btn-outline-success">
+                        <i class="bi bi-graph-up-arrow"></i> Predicciones
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Data from Django
+const chartData = {{ chart_data|safe }};
+
+// Stock Distribution Chart (Pie)
+const stockCtx = document.getElementById('stockChart').getContext('2d');
+new Chart(stockCtx, {
+    type: 'doughnut',
+    data: {
+        labels: chartData.stock_distribution.labels,
+        datasets: [{
+            data: chartData.stock_distribution.data,
+            backgroundColor: ['#198754', '#dc3545'],
+            borderWidth: 0
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                position: 'bottom'
+            }
+        }
+    }
+});
+
+// Categories Chart (Bar)
+const categoriesCtx = document.getElementById('categoriesChart').getContext('2d');
+new Chart(categoriesCtx, {
+    type: 'bar',
+    data: {
+        labels: chartData.categorias_top.labels,
+        datasets: [{
+            label: 'Productos',
+            data: chartData.categorias_top.data,
+            backgroundColor: '#0d6efd'
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                display: false
+            }
+        },
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        }
+    }
+});
+
+// Brands Chart (Horizontal Bar)
+const brandsCtx = document.getElementById('brandsChart').getContext('2d');
+new Chart(brandsCtx, {
+    type: 'bar',
+    data: {
+        labels: chartData.marcas_top.labels,
+        datasets: [{
+            label: 'Productos',
+            data: chartData.marcas_top.data,
+            backgroundColor: '#198754'
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        indexAxis: 'y',
+        plugins: {
+            legend: {
+                display: false
+            }
+        },
+        scales: {
+            x: {
+                beginAtZero: true
+            }
+        }
+    }
+});
+
+// Export function
+function exportarDatos() {
+    alert('Función de exportación próximamente disponible');
+}
+</script>
+{% endblock %}

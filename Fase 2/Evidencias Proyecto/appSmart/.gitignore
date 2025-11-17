@@ -1,0 +1,68 @@
+# SmartERP - .gitignore
+
+# Entornos virtuales
+venv_smarterp/
+venv/
+env/
+ENV/
+
+# Configuración local (no versionar)
+.env.local
+.env.*.local
+
+# Configuración de producción (puede contener secrets)
+.env.production
+
+# Django
+*.pyc
+__pycache__/
+*.pyo
+*.pyd
+.Python
+db.sqlite3
+db.sqlite3-journal
+
+# Archivos estáticos recolectados
+/staticfiles/
+/static/
+/media/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Testing
+.coverage
+.pytest_cache/
+htmlcov/
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+*~
+
+# Logs
+*.log
+logs/
+
+# Node modules (si se agregan dependencias frontend)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Backup files
+*.bak
+*.backup
+*.orig
+
+# Temporary files
+*.tmp
+*.temp

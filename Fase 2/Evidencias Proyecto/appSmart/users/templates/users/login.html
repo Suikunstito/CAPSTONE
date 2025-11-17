@@ -1,0 +1,123 @@
+{% extends 'base.html' %}
+
+{% block title %}Iniciar Sesión - SmartERP{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center align-items-center" style="min-height: 80vh;">
+        <div class="col-md-5">
+            <div class="card shadow-lg border-0">
+                <div class="card-body p-5">
+                    <!-- Logo/Brand -->
+                    <div class="text-center mb-4">
+                        <i class="bi bi-boxes text-primary" style="font-size: 3rem;"></i>
+                        <h2 class="mt-2 fw-bold">SmartERP</h2>
+                        <p class="text-muted">Sistema de Gestión de Inventario</p>
+                    </div>
+                    
+                    <!-- Login Form -->
+                    <form method="post" novalidate>
+                        {% csrf_token %}
+                        
+                        <!-- Username -->
+                        <div class="mb-3">
+                            <label for="{{ form.username.id_for_label }}" class="form-label">
+                                <i class="bi bi-person"></i> Usuario
+                            </label>
+                            <input type="text" 
+                                   name="{{ form.username.name }}" 
+                                   class="form-control form-control-lg {% if form.username.errors %}is-invalid{% endif %}"
+                                   id="{{ form.username.id_for_label }}"
+                                   placeholder="Ingresa tu usuario"
+                                   value="{{ form.username.value|default:'' }}"
+                                   autofocus
+                                   required>
+                            {% if form.username.errors %}
+                                <div class="invalid-feedback">
+                                    {{ form.username.errors.0 }}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Password -->
+                        <div class="mb-3">
+                            <label for="{{ form.password.id_for_label }}" class="form-label">
+                                <i class="bi bi-lock"></i> Contraseña
+                            </label>
+                            <input type="password" 
+                                   name="{{ form.password.name }}" 
+                                   class="form-control form-control-lg {% if form.password.errors %}is-invalid{% endif %}"
+                                   id="{{ form.password.id_for_label }}"
+                                   placeholder="Ingresa tu contraseña"
+                                   required>
+                            {% if form.password.errors %}
+                                <div class="invalid-feedback">
+                                    {{ form.password.errors.0 }}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Remember me -->
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" id="remember">
+                            <label class="form-check-label" for="remember">
+                                Recordarme
+                            </label>
+                        </div>
+                        
+                        <!-- Submit button -->
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="bi bi-box-arrow-in-right"></i> Iniciar Sesión
+                            </button>
+                        </div>
+                        
+                        <!-- Non-field errors -->
+                        {% if form.non_field_errors %}
+                            <div class="alert alert-danger mt-3" role="alert">
+                                {{ form.non_field_errors.0 }}
+                            </div>
+                        {% endif %}
+                    </form>
+                    
+                    <!-- Footer links -->
+                    <div class="text-center mt-4">
+                        <small class="text-muted">
+                            ¿Olvidaste tu contraseña? <a href="#">Recuperar</a>
+                        </small>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Development info -->
+            <div class="text-center mt-3">
+                <small class="text-muted">
+                    <i class="bi bi-info-circle"></i> 
+                    Arquitectura Modular v2.0 | Django 5.2
+                </small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    body {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+    
+    .card {
+        border-radius: 1rem;
+    }
+    
+    .btn-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        transition: transform 0.2s;
+    }
+    
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+</style>
+{% endblock %}

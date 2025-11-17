@@ -1,0 +1,110 @@
+# SmartERP - Docker Compose para Producción
+# Configuración optimizada para deployment en producción
+# Usar: docker-compose -f docker-compose.prod.yml up
+
+version: '3.8'
+
+services:
+  # =================================================================
+  # SmartERP Web Application - Producción
+  # =================================================================
+  smarterp:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production  # Usa stage de producción
+    
+    container_name: smarterp_prod
+    
+    ports:
+      - "8000:8000"
+    
+    # Solo volúmenes necesarios (no código fuente)
+    volumes:
+      - smarterp_media:/app/media
+      - smarterp_static:/app/staticfiles
+      - smarterp_logs:/app/logs
+    
+    environment:
+      - DJANGO_ENVIRONMENT=production
+      - DJANGO_DEBUG=False
+    
+    env_file:
+      - .env.production
+    
+    # Política de reinicio para producción
+    restart: always
+    
+    # Healthcheck para monitoreo
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/admin/login/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    
+    networks:
+      - smarterp_network
+
+  # =================================================================
+  # Nginx - Proxy Reverso y Archivos Estáticos
+  # =================================================================
+  nginx:
+    image: nginx:alpine
+    container_name: smarterp_nginx
+    
+    ports:
+      - "80:80"
+      - "443:443"
+    
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - smarterp_static:/var/www/static:ro
+      - smarterp_media:/var/www/media:ro
+      - ./ssl:/etc/nginx/ssl:ro  # Certificados SSL
+    
+    depends_on:
+      - smarterp
+    
+    restart: always
+    
+    networks:
+      - smarterp_network
+
+  # =================================================================
+  # Redis - Cache y Sesiones en Producción
+  # =================================================================
+  redis:
+    image: redis:7-alpine
+    container_name: smarterp_redis_prod
+    
+    command: redis-server --appendonly yes --requirepass SmartERPRedis2024
+    
+    volumes:
+      - redis_data:/data
+    
+    restart: always
+    
+    networks:
+      - smarterp_network
+
+# =================================================================
+# Volúmenes Persistentes para Producción
+# =================================================================
+volumes:
+  smarterp_media:
+    name: smarterp_prod_media
+  smarterp_static:
+    name: smarterp_prod_static
+  smarterp_logs:
+    name: smarterp_prod_logs
+  redis_data:
+    name: smarterp_prod_redis
+
+# =================================================================
+# Redes
+# =================================================================
+networks:
+  smarterp_network:
+    name: smarterp_prod_network
+    driver: bridge

@@ -1,0 +1,307 @@
+{% extends 'base.html' %}
+
+{% block title %}Productos - SmartERP{% endblock %}
+
+{% block page_title %}
+    <i class="bi bi-box-seam"></i> Catálogo de Productos
+{% endblock %}
+
+{% block page_actions %}
+    <div class="btn-toolbar">
+        <a href="{% url 'catalog:crear_producto' %}" class="btn btn-primary me-2">
+            <i class="bi bi-plus-circle"></i> Nuevo Producto
+        </a>
+        <button type="button" class="btn btn-outline-secondary" onclick="window.print()">
+            <i class="bi bi-printer"></i> Imprimir
+        </button>
+    </div>
+{% endblock %}
+
+{% block content %}
+<!-- Filters and Search -->
+<div class="card border-0 shadow-sm mb-4">
+    <div class="card-body">
+        <form method="get" class="row g-3">
+            <!-- Search -->
+            <div class="col-md-4">
+                <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-search"></i></span>
+                    <input type="search" name="search" class="form-control" 
+                           placeholder="Buscar por título, marca, categoría..." 
+                           value="{{ search_query }}">
+                </div>
+            </div>
+            
+            <!-- Stock Filter -->
+            <div class="col-md-2">
+                <select name="stock" class="form-select">
+                    <option value="">Todos los estados</option>
+                    <option value="disponible" {% if stock_filter == 'disponible' %}selected{% endif %}>Con Stock</option>
+                    <option value="sin_stock" {% if stock_filter == 'sin_stock' %}selected{% endif %}>Sin Stock</option>
+                </select>
+            </div>
+            
+            <!-- Offer Filter -->
+            <div class="col-md-2">
+                <select name="oferta" class="form-select">
+                    <option value="">Ofertas</option>
+                    <option value="true" {% if oferta_filter == 'true' %}selected{% endif %}>En Oferta</option>
+                    <option value="false" {% if oferta_filter == 'false' %}selected{% endif %}>Sin Oferta</option>
+                </select>
+            </div>
+            
+            <!-- Sort -->
+            <div class="col-md-2">
+                <select name="orden" class="form-select">
+                    <option value="title" {% if orden == 'title' %}selected{% endif %}>Nombre A-Z</option>
+                    <option value="-title" {% if orden == '-title' %}selected{% endif %}>Nombre Z-A</option>
+                    <option value="normal_price" {% if orden == 'normal_price' %}selected{% endif %}>Precio Menor</option>
+                    <option value="-normal_price" {% if orden == '-normal_price' %}selected{% endif %}>Precio Mayor</option>
+                    <option value="brand" {% if orden == 'brand' %}selected{% endif %}>Marca A-Z</option>
+                </select>
+            </div>
+            
+            <!-- Submit -->
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary w-100">
+                    <i class="bi bi-funnel"></i> Filtrar
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Results Info -->
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <p class="text-muted mb-0">
+        Mostrando <strong>{{ productos|length }}</strong> de <strong>{{ total_productos }}</strong> productos
+        {% if search_query %}
+            | Búsqueda: "<strong>{{ search_query }}</strong>"
+            <a href="{% url 'catalog:lista_productos' %}" class="btn btn-sm btn-outline-secondary ms-2">
+                <i class="bi bi-x"></i> Limpiar
+            </a>
+        {% endif %}
+    </p>
+    
+    <!-- View Toggle -->
+    <div class="btn-group" role="group">
+        <button type="button" class="btn btn-sm btn-outline-secondary active" onclick="cambiarVista('tabla')">
+            <i class="bi bi-table"></i> Tabla
+        </button>
+        <button type="button" class="btn btn-sm btn-outline-secondary" onclick="cambiarVista('grid')">
+            <i class="bi bi-grid-3x3"></i> Tarjetas
+        </button>
+    </div>
+</div>
+
+<!-- Products Table -->
+<div id="vista-tabla" class="card border-0 shadow-sm">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0" id="productosTable">
+                <thead class="table-light">
+                    <tr>
+                        <th style="width: 5%;">ID</th>
+                        <th style="width: 30%;">Producto</th>
+                        <th style="width: 15%;">Marca</th>
+                        <th style="width: 10%;">Precio</th>
+                        <th style="width: 15%;">Categoría</th>
+                        <th style="width: 10%;">Estado</th>
+                        <th style="width: 15%;" class="text-center">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for producto in productos %}
+                    <tr>
+                        <td class="text-muted">#{{ producto.id_producto }}</td>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <div class="ms-2">
+                                    <strong>{{ producto.title|truncatewords:8 }}</strong>
+                                    {% if producto.oferta %}
+                                        <br><small class="text-warning"><i class="bi bi-tag-fill"></i> Oferta</small>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </td>
+                        <td>{{ producto.brand|default:"Sin marca" }}</td>
+                        <td>
+                            <strong class="text-success">${{ producto.normal_price|floatformat:0 }}</strong>
+                            {% if producto.oferta and producto.low_price %}
+                                <br><small class="text-muted text-decoration-line-through">${{ producto.low_price|floatformat:0 }}</small>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <span class="badge bg-secondary">{{ producto.categoria1|default:"Sin categoría"|truncatewords:2 }}</span>
+                        </td>
+                        <td>
+                            {% if producto.sin_stock %}
+                                <span class="badge bg-danger">
+                                    <i class="bi bi-x-circle"></i> Sin Stock
+                                </span>
+                            {% else %}
+                                <span class="badge bg-success">
+                                    <i class="bi bi-check-circle"></i> Disponible
+                                </span>
+                            {% endif %}
+                        </td>
+                        <td class="text-center">
+                            <div class="btn-group btn-group-sm" role="group">
+                                <a href="{% url 'catalog:detalle_producto' producto.id_producto %}" 
+                                   class="btn btn-outline-info" title="Ver detalle">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+                                <a href="{% url 'catalog:editar_producto' producto.id_producto %}" 
+                                   class="btn btn-outline-primary" title="Editar">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <a href="{% url 'catalog:eliminar_producto' producto.id_producto %}" 
+                                   class="btn btn-outline-danger" title="Eliminar"
+                                   onclick="return confirm('¿Estás seguro de eliminar este producto?')">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="7" class="text-center text-muted py-5">
+                            <i class="bi bi-inbox" style="font-size: 3rem;"></i>
+                            <p class="mt-2">No se encontraron productos</p>
+                            {% if search_query or stock_filter or oferta_filter %}
+                                <a href="{% url 'catalog:lista_productos' %}" class="btn btn-primary">
+                                    Ver todos los productos
+                                </a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Products Grid (Hidden by default) -->
+<div id="vista-grid" class="row g-3 d-none">
+    {% for producto in productos %}
+    <div class="col-md-4 col-lg-3">
+        <div class="card h-100 border-0 shadow-sm">
+            {% if producto.oferta %}
+                <div class="position-absolute top-0 end-0 m-2">
+                    <span class="badge bg-warning text-dark">
+                        <i class="bi bi-tag-fill"></i> Oferta
+                    </span>
+                </div>
+            {% endif %}
+            <div class="card-body">
+                <h6 class="card-title">{{ producto.title|truncatewords:5 }}</h6>
+                <p class="text-muted small mb-2">{{ producto.brand|default:"Sin marca" }}</p>
+                <h5 class="text-success mb-2">${{ producto.normal_price|floatformat:0 }}</h5>
+                <p class="small mb-2">
+                    <span class="badge bg-secondary">{{ producto.categoria1|default:"Sin categoría"|truncatewords:2 }}</span>
+                </p>
+                {% if producto.sin_stock %}
+                    <span class="badge bg-danger w-100 mb-2">Sin Stock</span>
+                {% else %}
+                    <span class="badge bg-success w-100 mb-2">Disponible</span>
+                {% endif %}
+            </div>
+            <div class="card-footer bg-white border-0">
+                <div class="btn-group w-100" role="group">
+                    <a href="{% url 'catalog:detalle_producto' producto.id_producto %}" class="btn btn-sm btn-outline-info">
+                        <i class="bi bi-eye"></i>
+                    </a>
+                    <a href="{% url 'catalog:editar_producto' producto.id_producto %}" class="btn btn-sm btn-outline-primary">
+                        <i class="bi bi-pencil"></i>
+                    </a>
+                    <a href="{% url 'catalog:eliminar_producto' producto.id_producto %}" 
+                       class="btn btn-sm btn-outline-danger"
+                       onclick="return confirm('¿Eliminar producto?')">
+                        <i class="bi bi-trash"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Pagination -->
+{% if productos.has_other_pages %}
+<nav aria-label="Paginación de productos" class="mt-4">
+    <ul class="pagination justify-content-center">
+        {% if productos.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ productos.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if stock_filter %}&stock={{ stock_filter }}{% endif %}{% if oferta_filter %}&oferta={{ oferta_filter }}{% endif %}{% if orden %}&orden={{ orden }}{% endif %}">
+                    <i class="bi bi-chevron-left"></i> Anterior
+                </a>
+            </li>
+        {% else %}
+            <li class="page-item disabled">
+                <span class="page-link"><i class="bi bi-chevron-left"></i> Anterior</span>
+            </li>
+        {% endif %}
+        
+        {% for num in productos.paginator.page_range %}
+            {% if productos.number == num %}
+                <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+            {% elif num > productos.number|add:'-3' and num < productos.number|add:'3' %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ num }}{% if search_query %}&search={{ search_query }}{% endif %}{% if stock_filter %}&stock={{ stock_filter }}{% endif %}{% if oferta_filter %}&oferta={{ oferta_filter }}{% endif %}{% if orden %}&orden={{ orden }}{% endif %}">
+                        {{ num }}
+                    </a>
+                </li>
+            {% endif %}
+        {% endfor %}
+        
+        {% if productos.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ productos.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if stock_filter %}&stock={{ stock_filter }}{% endif %}{% if oferta_filter %}&oferta={{ oferta_filter }}{% endif %}{% if orden %}&orden={{ orden }}{% endif %}">
+                    Siguiente <i class="bi bi-chevron-right"></i>
+                </a>
+            </li>
+        {% else %}
+            <li class="page-item disabled">
+                <span class="page-link">Siguiente <i class="bi bi-chevron-right"></i></span>
+            </li>
+        {% endif %}
+    </ul>
+</nav>
+{% endif %}
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// DataTables initialization
+$(document).ready(function() {
+    // Opcional: Si quieres DataTables avanzado en lugar de paginación Django
+    // $('#productosTable').DataTable({
+    //     pageLength: 25,
+    //     language: {
+    //         url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/es-ES.json'
+    //     }
+    // });
+});
+
+// View Toggle
+function cambiarVista(tipo) {
+    const tabla = document.getElementById('vista-tabla');
+    const grid = document.getElementById('vista-grid');
+    const btnTabla = document.querySelector('[onclick="cambiarVista(\'tabla\')"]');
+    const btnGrid = document.querySelector('[onclick="cambiarVista(\'grid\')"]');
+    
+    if (tipo === 'tabla') {
+        tabla.classList.remove('d-none');
+        grid.classList.add('d-none');
+        btnTabla.classList.add('active');
+        btnGrid.classList.remove('active');
+    } else {
+        tabla.classList.add('d-none');
+        grid.classList.remove('d-none');
+        btnTabla.classList.remove('active');
+        btnGrid.classList.add('active');
+    }
+}
+</script>
+{% endblock %}

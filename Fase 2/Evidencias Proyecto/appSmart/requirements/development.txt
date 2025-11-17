@@ -1,0 +1,18 @@
+# Dependencias de desarrollo para SmartERP
+-r base.txt
+
+# Desarrollo y debugging
+django-debug-toolbar==4.2.0
+django-extensions==3.2.3
+
+# Testing
+pytest==7.4.3
+pytest-django==4.7.0
+coverage==7.3.2
+
+# Análisis de código
+flake8==6.1.0
+black==23.11.0
+
+# Desarrollo adicional
+ipython==8.17.2

@@ -1,0 +1,113 @@
+<div class="position-sticky pt-3">
+    <ul class="nav flex-column">
+        <!-- Dashboard -->
+        <li class="nav-item">
+            <a class="nav-link {% if request.resolver_match.url_name == 'home' or request.resolver_match.url_name == 'dashboard' %}active{% endif %}" 
+               href="{% url 'inventory:home' %}">
+                <i class="bi bi-speedometer2"></i>
+                Dashboard
+            </a>
+        </li>
+        
+        <!-- Productos -->
+        <li class="nav-item">
+            <a class="nav-link {% if 'productos' in request.path %}active{% endif %}" 
+               href="{% url 'catalog:lista_productos' %}">
+                <i class="bi bi-box-seam"></i>
+                Productos
+            </a>
+        </li>
+        
+        <!-- Inventario -->
+        <li class="nav-item">
+            <a class="nav-link" href="#" data-bs-toggle="collapse" data-bs-target="#inventarioSubmenu">
+                <i class="bi bi-clipboard-data"></i>
+                Inventario
+                <i class="bi bi-chevron-down ms-auto"></i>
+            </a>
+            <ul class="collapse list-unstyled ps-4" id="inventarioSubmenu">
+                <li><a class="nav-link" href="{% url 'inventory:movimientos' %}">
+                    <i class="bi bi-arrow-left-right"></i> Movimientos
+                </a></li>
+                <li><a class="nav-link" href="{% url 'inventory:predicciones' %}">
+                    <i class="bi bi-graph-up-arrow"></i> Predicciones
+                </a></li>
+            </ul>
+        </li>
+        
+        <!-- Ventas -->
+        <li class="nav-item">
+            <a class="nav-link" href="#">
+                <i class="bi bi-cart-check"></i>
+                Ventas
+                <span class="badge bg-primary ms-2">Próximo</span>
+            </a>
+        </li>
+        
+        <!-- Reportes -->
+        <li class="nav-item">
+            <a class="nav-link" href="#">
+                <i class="bi bi-file-earmark-bar-graph"></i>
+                Reportes
+                <span class="badge bg-primary ms-2">Próximo</span>
+            </a>
+        </li>
+    </ul>
+    
+    <hr class="my-3">
+    
+    <!-- Configuración -->
+    <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+        <span>ADMINISTRACIÓN</span>
+    </h6>
+    <ul class="nav flex-column mb-2">
+        <li class="nav-item">
+            <a class="nav-link" href="/admin/" target="_blank">
+                <i class="bi bi-gear-fill"></i>
+                Django Admin
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#">
+                <i class="bi bi-people"></i>
+                Usuarios
+            </a>
+        </li>
+    </ul>
+</div>
+
+<style>
+    #sidebar {
+        min-height: calc(100vh - 56px);
+        box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
+    }
+    
+    #sidebar .nav-link {
+        font-weight: 500;
+        color: #333;
+        padding: 0.75rem 1rem;
+        border-radius: 0.25rem;
+        transition: all 0.2s;
+    }
+    
+    #sidebar .nav-link:hover {
+        color: #0d6efd;
+        background-color: rgba(13, 110, 253, 0.1);
+    }
+    
+    #sidebar .nav-link.active {
+        color: #0d6efd;
+        background-color: rgba(13, 110, 253, 0.15);
+        font-weight: 600;
+    }
+    
+    #sidebar .nav-link i {
+        width: 20px;
+        margin-right: 8px;
+    }
+    
+    .sidebar-heading {
+        font-size: 0.75rem;
+        text-transform: uppercase;
+    }
+</style>
