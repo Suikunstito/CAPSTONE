@@ -15,7 +15,7 @@
 ```
 Productos (1) ←→ (N) Ventas
     id_producto ←→ id_producto (FK)
-    
+
 StgProductosRaw → [ETL Process] → Productos
     (staging)                     (production)
 ```
@@ -76,7 +76,7 @@ DATABASES = {
 
 ### Tipos de Datos y Precisión
 | Propósito         | SQL Server Type    | Django Equivalent           | Notas                    |
-|-------------------|--------------------|-----------------------------|--------------------------| 
+|-------------------|--------------------|-----------------------------|--------------------------|
 | Precios/Dinero    | `DECIMAL(12,2)`    | `DecimalField(12,2)`        | 12 dígitos, 2 decimales  |
 | Porcentajes       | `DECIMAL(12,3)`    | `DecimalField(12,3)`        | 3 decimales para %       |
 | Booleanos         | `BIT`              | `BooleanField(null=True)`   | Nullable en BD           |
@@ -112,10 +112,10 @@ from django.db import transaction
 def crear_venta_completa(producto_id, cantidad, precio_unitario):
     # Verificar producto existe
     producto = Productos.objects.get(id_producto=producto_id)
-    
+
     # Calcular total
     total = cantidad * precio_unitario
-    
+
     # Crear venta
     venta = Ventas.objects.create(
         id_producto=producto,
@@ -124,7 +124,7 @@ def crear_venta_completa(producto_id, cantidad, precio_unitario):
         precio_unitario=precio_unitario,
         total_venta=total
     )
-    
+
     return venta
 ```
 
@@ -149,7 +149,7 @@ def crear_venta_completa(producto_id, cantidad, precio_unitario):
 productos = Productos.objects.filter(sin_stock=False)
 total = Productos.objects.count()
 
-# ✅ PERMITIDO - Escritura ORM controlada  
+# ✅ PERMITIDO - Escritura ORM controlada
 producto.title = "Nuevo Nombre"
 producto.save()
 
@@ -179,7 +179,7 @@ ventas_con_producto = Ventas.objects.select_related('id_producto').all()
 ```sql
 -- Vista sugerida: resumen productos
 CREATE VIEW vw_productos_resumen AS
-SELECT 
+SELECT
     p.id_producto,
     p.title,
     p.brand,

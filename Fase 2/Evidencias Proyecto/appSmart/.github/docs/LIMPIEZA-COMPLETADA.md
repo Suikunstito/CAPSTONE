@@ -131,7 +131,7 @@ C:\...\appSmart>dir
 C:\...\appSmart>dir scripts
 
 # clean.bat
-# dev-local.bat  
+# dev-local.bat
 # prod.bat
 # quick-setup.bat
 # quick-setup.sh
@@ -216,7 +216,7 @@ python manage.py check
 ---
 
 **Estado:** ✅ COMPLETADO Y VERIFICADO (2da iteración)
-**Fecha:** Noviembre 11, 2025  
+**Fecha:** Noviembre 11, 2025
 **Resultado:** Estructura limpia, legible y mantenible
 **Archivos eliminados:** 6 (duplicados y obsoletos)
 **Raíz limpia:** Solo 2 scripts de entrada + archivos esenciales

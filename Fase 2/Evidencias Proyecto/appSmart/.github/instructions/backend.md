@@ -26,11 +26,11 @@ class Productos(models.Model):
     title = models.CharField(max_length=255, db_collation='Modern_Spanish_CI_AS')
     normal_price = models.DecimalField(max_digits=12, decimal_places=2, blank=True, null=True)
     sin_stock = models.BooleanField(blank=True, null=True)
-    
+
     class Meta:
         managed = False  # ← CRÍTICO: nunca cambiar
         db_table = 'Productos'
-    
+
     def __str__(self):
         return f"{self.title} - {self.brand or 'Sin marca'}"
 
@@ -49,7 +49,7 @@ class Ventas(models.Model):
     id_venta = models.AutoField(primary_key=True)
     id_producto = models.ForeignKey(Productos, models.DO_NOTHING, db_column='id_producto')
     # ... resto de campos
-    
+
     class Meta:
         managed = False
         db_table = 'Ventas'
@@ -118,7 +118,7 @@ def register_sale(producto_id, cantidad, precio_unitario):
     producto = Productos.objects.get(id_producto=producto_id)
     if cantidad <= 0 or precio_unitario <= 0:
         raise ValueError("Cantidad y precio deben ser positivos")
-    
+
     total = cantidad * precio_unitario
     return Ventas.objects.create(
         id_producto=producto,
@@ -142,7 +142,7 @@ from inventory.services.stock import get_stock_stats
 def dashboard(request):
     """Dashboard usando servicios en lugar de consultas directas"""
     stats = get_stock_stats()  # Usa servicio centralizado
-    
+
     context = {
         'total_productos': stats['total_productos'],
         'productos_con_stock': stats['productos_con_stock'],
@@ -173,7 +173,7 @@ def editar_producto(request, id_producto):
             return redirect('productos')
     else:
         form = ProductoForm(instance=producto)
-    return render(request, 'catalog/producto_form.html', 
+    return render(request, 'catalog/producto_form.html',
                   {'form': form, 'accion': 'Editar Producto'})
 ```
 
@@ -186,7 +186,7 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    
+
     # Apps modulares con include()
     path('', include('inventory.urls')),    # Dashboard raíz
     path('', include('catalog.urls')),      # /productos/*
@@ -259,7 +259,7 @@ class ProductoForm(forms.ModelForm):
             'kilo'             # Float - peso/kilo
         ]
         # EXCLUIDOS: datetime, page, total_venta, Atributos (computados)
-    
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         # TODO(doc-sync): Widgets personalizados por dominio
@@ -338,10 +338,10 @@ def complete_sale_with_inventory_update(producto_id, cantidad):
     """
     # 1. Crear venta en sales
     venta = register_sale(producto_id, cantidad, precio)
-    
+
     # 2. Actualizar stock en inventory (futuro)
     # update_inventory_movement(producto_id, cantidad, 'out')
-    
+
     return venta
 ```
 
@@ -435,7 +435,7 @@ class ProductoForm(forms.ModelForm):
         if price and price <= 0:
             raise ValidationError('El precio debe ser mayor a 0.')
         return price
-    
+
     def clean(self):
         cleaned_data = super().clean()
         # TODO(doc-sync): Validaciones cross-domain con servicios
@@ -450,7 +450,7 @@ class CatalogServicesTest(TestCase):
         # Test específico del dominio catalog
         pass
 
-# inventory/tests/test_services.py  
+# inventory/tests/test_services.py
 class InventoryServicesTest(TestCase):
     @patch('catalog.models.products.Productos.objects')
     def test_stock_stats_service(self, mock_productos):

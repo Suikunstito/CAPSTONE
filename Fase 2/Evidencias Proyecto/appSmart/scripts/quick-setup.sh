@@ -17,7 +17,7 @@ if command -v task >/dev/null 2>&1; then
 else
     echo -e "\033[93m⚠️  Task no encontrado, usando setup manual...\033[0m"
     echo ""
-    
+
     # Setup manual sin Task
     echo -e "\033[96mVerificando Python...\033[0m"
     if ! command -v python3 >/dev/null 2>&1; then
@@ -26,7 +26,7 @@ else
         exit 1
     fi
     echo -e "\033[92m✅ Python encontrado\033[0m"
-    
+
     echo ""
     echo -e "\033[96mCreando entorno virtual...\033[0m"
     if [ -d "venv_smarterp" ]; then
@@ -34,23 +34,23 @@ else
         rm -rf venv_smarterp
     fi
     python3 -m venv venv_smarterp
-    
+
     echo ""
     echo -e "\033[96mInstalando dependencias...\033[0m"
     source venv_smarterp/bin/activate
     pip install --upgrade pip
     pip install -r requirements/development.txt
-    
+
     echo ""
     echo -e "\033[96mConfigurando ambiente...\033[0m"
     if [ ! -f ".env.development" ]; then
         cp .env.example .env.development
     fi
-    
+
     echo ""
     echo -e "\033[96mVerificando configuración...\033[0m"
     python manage.py check
-    
+
     echo ""
     echo -e "\033[92m======================================\033[0m"
     echo -e "\033[92m  Setup Local Completado!\033[0m"

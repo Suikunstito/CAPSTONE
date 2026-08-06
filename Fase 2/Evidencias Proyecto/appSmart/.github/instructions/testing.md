@@ -44,7 +44,7 @@ DATABASES = {
 class DisableMigrations:
     def __contains__(self, item):
         return True
-    
+
     def __getitem__(self, item):
         return None
 
@@ -83,7 +83,7 @@ class DashboardViewTest(TestCase):
             username='testuser',
             password='testpass123'
         )
-    
+
     @patch('productos.models.Productos.objects')
     def test_dashboard_context_structure(self, mock_productos):
         """Verificar que el dashboard envía las variables correctas"""
@@ -91,13 +91,13 @@ class DashboardViewTest(TestCase):
         mock_productos.count.return_value = 100
         mock_productos.filter.return_value.count.side_effect = [80, 20, 15]
         mock_productos.aggregate.return_value = {'normal_price__sum': 5000.00}
-        
+
         self.client.login(username='testuser', password='testpass123')
         response = self.client.get(reverse('dashboard'))
-        
+
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'Panel de control')
-        
+
         # Verificar contexto
         context = response.context
         self.assertIn('total_productos', context)
@@ -117,7 +117,7 @@ class DashboardViewTest(TestCase):
 class ProductosListViewTest(TestCase):
     def setUp(self):
         self.user = User.objects.create_user('testuser', password='testpass')
-    
+
     @patch('productos.models.Productos.objects')
     def test_productos_list_template_and_context(self, mock_productos):
         """Verificar template y contexto de lista de productos"""
@@ -125,10 +125,10 @@ class ProductosListViewTest(TestCase):
         mock_queryset = MagicMock()
         mock_queryset.all.return_value.order_by.return_value = []
         mock_productos.all.return_value.order_by.return_value = mock_queryset
-        
+
         self.client.login(username='testuser', password='testpass')
         response = self.client.get(reverse('productos'))
-        
+
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'productos.html')
         self.assertIn('productos', response.context)
@@ -158,14 +158,14 @@ class ProductoFormTest(TestCase):
         }
         form = ProductoForm(data=form_data)
         self.assertTrue(form.is_valid())
-    
+
     def test_producto_form_missing_required_fields(self):
         """Prueba campos requeridos faltantes"""
         form_data = {}
         form = ProductoForm(data=form_data)
         self.assertFalse(form.is_valid())
         # Verificar errores específicos sin depender de BD
-    
+
     def test_producto_form_decimal_precision(self):
         """Verificar validación de precisión decimal"""
         form_data = {
@@ -192,23 +192,23 @@ class URLsTest(TestCase):
         url = reverse('dashboard')
         self.assertEqual(url, '/')
         self.assertEqual(resolve(url).func, views.dashboard)
-    
+
     def test_productos_crud_urls(self):
         """Verificar URLs de CRUD de productos"""
         urls_map = {
             'productos': '/productos/',
             'crear_producto': '/productos/nuevo/',
         }
-        
+
         for name, expected_path in urls_map.items():
             url = reverse(name)
             self.assertEqual(url, expected_path)
-    
+
     def test_producto_detail_urls_with_params(self):
         """Verificar URLs con parámetros"""
         url = reverse('editar_producto', kwargs={'id_producto': 123})
         self.assertEqual(url, '/productos/editar/123/')
-        
+
         url = reverse('eliminar_producto', kwargs={'id_producto': 456})
         self.assertEqual(url, '/productos/eliminar/456/')
 ```
@@ -238,7 +238,7 @@ class DatabaseConnectivityTest(TestCase):
                 self.assertEqual(result[0], 1)
         except Exception as e:
             self.fail(f"Conexión a BD falló: {e}")
-    
+
     @unittest.skipIf(
         not connections['default'].settings_dict['NAME'] == 'inventario',
         "Solo ejecutar con BD real"
@@ -263,7 +263,7 @@ DJANGO_SETTINGS_MODULE = inventario_web.tests_settings
 python_files = tests.py test_*.py *_tests.py
 python_classes = Test* *Tests
 python_functions = test_*
-addopts = 
+addopts =
     --reuse-db
     --nomigrations
     --tb=short
@@ -297,11 +297,11 @@ def create_mock_producto(**kwargs):
         'oferta': False,
     }
     defaults.update(kwargs)
-    
+
     mock_producto = MagicMock()
     for key, value in defaults.items():
         setattr(mock_producto, key, value)
-    
+
     return mock_producto
 
 def mock_productos_queryset(productos_list):
@@ -380,14 +380,14 @@ class PerformanceTest(TestCase):
     def test_dashboard_response_time(self):
         """Verificar que dashboard responde en tiempo razonable"""
         start_time = time.time()
-        
+
         # Mock consultas para testing determinístico
         with patch('productos.models.Productos.objects'):
             response = self.client.get('/')
-            
+
         end_time = time.time()
         response_time = end_time - start_time
-        
+
         self.assertLess(response_time, 1.0)  # Menos de 1 segundo
         self.assertEqual(response.status_code, 200)
 ```

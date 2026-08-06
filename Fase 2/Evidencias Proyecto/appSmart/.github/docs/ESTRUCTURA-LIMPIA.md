@@ -270,7 +270,7 @@ scripts\clean.bat    # Si hay problemas graves
 ### 🔄 Proceso para Agregar Nuevo Script
 
 ```
-1. ¿Es punto de entrada principal? 
+1. ¿Es punto de entrada principal?
    → SÍ: Raíz
    → NO: Continuar
 
@@ -345,5 +345,5 @@ dir .github\docs
 
 ---
 
-**Reorganización completada:** Noviembre 11, 2025  
+**Reorganización completada:** Noviembre 11, 2025
 **Próxima revisión recomendada:** Trimestral o cuando se agreguen 5+ archivos nuevos

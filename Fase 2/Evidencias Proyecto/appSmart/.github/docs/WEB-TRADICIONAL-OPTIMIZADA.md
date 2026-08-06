@@ -102,7 +102,7 @@ appSmart/
 │       ├── navbar.html                     ✅ Componente navbar
 │       ├── sidebar.html                    ✅ Componente sidebar
 │       └── footer.html                     ✅ Componente footer
-├── static/                                 
+├── static/
 │   ├── css/
 │   │   └── custom.css                      ✅ Estilos personalizados
 │   └── js/

@@ -26,12 +26,12 @@
             <div class="col-md-4">
                 <div class="input-group">
                     <span class="input-group-text"><i class="bi bi-search"></i></span>
-                    <input type="search" name="search" class="form-control" 
-                           placeholder="Buscar por título, marca, categoría..." 
+                    <input type="search" name="search" class="form-control"
+                           placeholder="Buscar por título, marca, categoría..."
                            value="{{ search_query }}">
                 </div>
             </div>
-            
+
             <!-- Stock Filter -->
             <div class="col-md-2">
                 <select name="stock" class="form-select">
@@ -40,7 +40,7 @@
                     <option value="sin_stock" {% if stock_filter == 'sin_stock' %}selected{% endif %}>Sin Stock</option>
                 </select>
             </div>
-            
+
             <!-- Offer Filter -->
             <div class="col-md-2">
                 <select name="oferta" class="form-select">
@@ -49,7 +49,7 @@
                     <option value="false" {% if oferta_filter == 'false' %}selected{% endif %}>Sin Oferta</option>
                 </select>
             </div>
-            
+
             <!-- Sort -->
             <div class="col-md-2">
                 <select name="orden" class="form-select">
@@ -60,7 +60,7 @@
                     <option value="brand" {% if orden == 'brand' %}selected{% endif %}>Marca A-Z</option>
                 </select>
             </div>
-            
+
             <!-- Submit -->
             <div class="col-md-2">
                 <button type="submit" class="btn btn-primary w-100">
@@ -82,7 +82,7 @@
             </a>
         {% endif %}
     </p>
-    
+
     <!-- View Toggle -->
     <div class="btn-group" role="group">
         <button type="button" class="btn btn-sm btn-outline-secondary active" onclick="cambiarVista('tabla')">
@@ -147,15 +147,15 @@
                         </td>
                         <td class="text-center">
                             <div class="btn-group btn-group-sm" role="group">
-                                <a href="{% url 'catalog:detalle_producto' producto.id_producto %}" 
+                                <a href="{% url 'catalog:detalle_producto' producto.id_producto %}"
                                    class="btn btn-outline-info" title="Ver detalle">
                                     <i class="bi bi-eye"></i>
                                 </a>
-                                <a href="{% url 'catalog:editar_producto' producto.id_producto %}" 
+                                <a href="{% url 'catalog:editar_producto' producto.id_producto %}"
                                    class="btn btn-outline-primary" title="Editar">
                                     <i class="bi bi-pencil"></i>
                                 </a>
-                                <a href="{% url 'catalog:eliminar_producto' producto.id_producto %}" 
+                                <a href="{% url 'catalog:eliminar_producto' producto.id_producto %}"
                                    class="btn btn-outline-danger" title="Eliminar"
                                    onclick="return confirm('¿Estás seguro de eliminar este producto?')">
                                     <i class="bi bi-trash"></i>
@@ -215,7 +215,7 @@
                     <a href="{% url 'catalog:editar_producto' producto.id_producto %}" class="btn btn-sm btn-outline-primary">
                         <i class="bi bi-pencil"></i>
                     </a>
-                    <a href="{% url 'catalog:eliminar_producto' producto.id_producto %}" 
+                    <a href="{% url 'catalog:eliminar_producto' producto.id_producto %}"
                        class="btn btn-sm btn-outline-danger"
                        onclick="return confirm('¿Eliminar producto?')">
                         <i class="bi bi-trash"></i>
@@ -242,7 +242,7 @@
                 <span class="page-link"><i class="bi bi-chevron-left"></i> Anterior</span>
             </li>
         {% endif %}
-        
+
         {% for num in productos.paginator.page_range %}
             {% if productos.number == num %}
                 <li class="page-item active"><span class="page-link">{{ num }}</span></li>
@@ -254,7 +254,7 @@
                 </li>
             {% endif %}
         {% endfor %}
-        
+
         {% if productos.has_next %}
             <li class="page-item">
                 <a class="page-link" href="?page={{ productos.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if stock_filter %}&stock={{ stock_filter }}{% endif %}{% if oferta_filter %}&oferta={{ oferta_filter }}{% endif %}{% if orden %}&orden={{ orden }}{% endif %}">
@@ -290,7 +290,7 @@ function cambiarVista(tipo) {
     const grid = document.getElementById('vista-grid');
     const btnTabla = document.querySelector('[onclick="cambiarVista(\'tabla\')"]');
     const btnGrid = document.querySelector('[onclick="cambiarVista(\'grid\')"]');
-    
+
     if (tipo === 'tabla') {
         tabla.classList.remove('d-none');
         grid.classList.add('d-none');

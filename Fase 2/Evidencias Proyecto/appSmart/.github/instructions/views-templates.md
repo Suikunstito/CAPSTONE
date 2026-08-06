@@ -6,7 +6,7 @@
 ```
 productos/templates/
 ├── base.html                    # Template base con CSS inline
-├── dashboard.html               # Panel estadísticas + Chart.js  
+├── dashboard.html               # Panel estadísticas + Chart.js
 ├── productos.html               # Lista completa de productos
 ├── producto_form.html           # Crear/editar producto (reutilizado)
 ├── producto_confirm_delete.html # Confirmación eliminación
@@ -76,7 +76,7 @@ productos/templates/
 ```python
 context = {
     'total_productos': int,           # Conteo total
-    'productos_con_stock': int,       # Sin stock=False  
+    'productos_con_stock': int,       # Sin stock=False
     'productos_sin_stock': int,       # Sin stock=True
     'productos_en_oferta': int,       # oferta=True
     'promedio_precio': Decimal,       # Suma de normal_price
@@ -151,7 +151,7 @@ document.addEventListener("DOMContentLoaded", function () {
             datasets: [{
                 data: [
                     {{ productos_con_stock }},
-                    {{ productos_sin_stock }}, 
+                    {{ productos_sin_stock }},
                     {{ productos_en_oferta }}
                 ],
                 backgroundColor: ['#28a745', '#dc3545', '#ffc107']
@@ -188,7 +188,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 ### Mapa de Navegación Real
 ```
-Inicio (/) 
+Inicio (/)
 ├── Dashboard con estadísticas
 ├── Navegación → "Productos" (/productos/)
 │   ├── Lista de productos
@@ -216,7 +216,7 @@ Inicio (/)
 - ❌ **NUNCA** crear pipelines de build para CSS/JS
 - ❌ **NUNCA** separar CSS inline sin planificación explícita
 
-### Restricciones de Funcionalidad  
+### Restricciones de Funcionalidad
 - ❌ **NUNCA** exponer datos sensibles en contexto sin validación
 - ❌ **NUNCA** omitir `{% csrf_token %}` en formularios POST
 - ❌ **NUNCA** hardcodear URLs en lugar de `{% url %}`
@@ -261,7 +261,7 @@ def crear_producto(request):
 {% if messages %}
     <div style="padding: 10px;">
         {% for message in messages %}
-            <div style="padding: 10px; margin: 5px 0; border-radius: 4px; 
+            <div style="padding: 10px; margin: 5px 0; border-radius: 4px;
                         background: {% if message.tags == 'success' %}#d4edda{% elif message.tags == 'error' %}#f8d7da{% endif %};">
                 {{ message }}
             </div>

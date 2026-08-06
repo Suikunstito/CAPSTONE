@@ -153,10 +153,10 @@ from catalog.models.products import Productos
 class ProductoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Productos
-        fields = ['id_producto', 'title', 'brand', 'normal_price', 
+        fields = ['id_producto', 'title', 'brand', 'normal_price',
                   'low_price', 'oferta', 'categoria1', 'sin_stock']
         read_only_fields = ['id_producto', 'datetime']
-    
+
     def validate_normal_price(self, value):
         if value < 0:
             raise serializers.ValidationError("Precio no puede ser negativo")
@@ -182,7 +182,7 @@ from .serializers import ProductoSerializer, ProductoDetailSerializer
 class ProductoViewSet(viewsets.ModelViewSet):
     """
     API endpoint para gestión de productos
-    
+
     list: Listar todos los productos (con paginación)
     retrieve: Obtener detalle de un producto
     create: Crear nuevo producto
@@ -194,18 +194,18 @@ class ProductoViewSet(viewsets.ModelViewSet):
     filter_backends = [filters.SearchFilter, filters.OrderingFilter]
     search_fields = ['title', 'brand', 'categoria1']
     ordering_fields = ['normal_price', 'datetime']
-    
+
     def get_serializer_class(self):
         if self.action == 'retrieve':
             return ProductoDetailSerializer
         return ProductoSerializer
-    
+
     @action(detail=False, methods=['get'])
     def stats(self, request):
         """Endpoint adicional: GET /api/v1/productos/stats/"""
         stats = get_product_stats()  # ← Reutiliza servicio existente
         return Response(stats)
-    
+
     @action(detail=False, methods=['get'])
     def sin_stock(self, request):
         """Productos sin stock"""
@@ -242,10 +242,10 @@ urlpatterns = [
     # Autenticación JWT
     path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-    
+
     # Versión 1 API
     path('v1/', include('api.v1.urls')),
-    
+
     # Documentación OpenAPI
     path('schema/', SpectacularAPIView.as_view(), name='schema'),
     path('docs/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
@@ -273,11 +273,11 @@ class ProductoAPITest(APITestCase):
     def setUp(self):
         self.user = User.objects.create_user('test', 'test@test.com', 'password')
         self.client.force_authenticate(user=self.user)
-        
+
     def test_list_productos(self):
         response = self.client.get('/api/v1/productos/')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-    
+
     def test_create_producto(self):
         data = {
             'title': 'Producto Test',

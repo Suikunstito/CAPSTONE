@@ -11,7 +11,7 @@ Sistema de gestión de inventario empresarial con arquitectura modular, soporte 
 setup-dev.bat
 ```
 
-### Ejecutar Servidor de Desarrollo  
+### Ejecutar Servidor de Desarrollo
 ```cmd
 dev.bat
 ```
@@ -40,7 +40,7 @@ dev.bat
 
 ### Auto-Detección Inteligente
 `dev.bat` detecta automáticamente:
-- ✅ **Docker disponible** → Usa Docker Compose  
+- ✅ **Docker disponible** → Usa Docker Compose
 - ✅ **Docker no disponible** → Usa entorno local Python
 - ✅ **Sin configuración manual** → Todo automático
 
@@ -51,7 +51,7 @@ dev.bat
 Presiona `Ctrl+Shift+P` → `Tasks: Run Task`:
 
 - 🚀 **SmartERP: Desarrollo (Auto-detecta)** - Ejecutar desarrollo
-- ⚙️ **SmartERP: Configurar Desarrollo** - Setup inicial  
+- ⚙️ **SmartERP: Configurar Desarrollo** - Setup inicial
 - 💻 **SmartERP: Desarrollo (Solo Local)** - Sin Docker
 - 🧪 **SmartERP: Ejecutar Tests** - Suite de tests
 - 🏭 **SmartERP: Producción** - Deploy producción
@@ -311,7 +311,7 @@ prod.bat
 ## 💡 Ventajas del Sistema
 
 - ✅ **Sin dependencias externas complejas** - Solo Python + Scripts nativos
-- ✅ **Auto-detección inteligente** - Docker o Local automático  
+- ✅ **Auto-detección inteligente** - Docker o Local automático
 - ✅ **Integración VSCode nativa** - Sin extensiones adicionales
 - ✅ **Base de datos flexible** - SQL Server o SQLite según disponibilidad
 - ✅ **Arquitectura modular** - Fácil de extender y mantener

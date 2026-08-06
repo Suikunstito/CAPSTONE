@@ -48,7 +48,7 @@ class Productos(models.Model):
     title = models.CharField(max_length=255, db_collation='Modern_Spanish_CI_AS')
     normal_price = models.DecimalField(max_digits=12, decimal_places=2)
     # ... otros campos con db_collation requerido
-    
+
     class Meta:
         managed = False  # NO permitir migraciones Django
         db_table = 'Productos'
@@ -115,9 +115,9 @@ def dashboard(request):
 # productos/views.py - Lógica central reutilizada
 def _analizar_producto(producto):
     """Determina estado del producto: disponible, en oferta, inconsistente"""
-    tiene_precio = any(_valor_positivo(valor) for valor in 
+    tiene_precio = any(_valor_positivo(valor) for valor in
                       (producto.normal_price, producto.low_price, producto.high_price))
-    oferta_activa = bool(producto.oferta) or any(_valor_positivo(valor) 
+    oferta_activa = bool(producto.oferta) or any(_valor_positivo(valor)
                       for valor in (producto.ahorro, producto.ahorro_percent))
     inconsistente = bool(producto.sin_stock) and tiene_precio
     return tiene_precio, oferta_activa, inconsistente
@@ -141,7 +141,7 @@ class ProductoForm(forms.ModelForm):
     class Meta:
         model = Productos
         fields = ['title', 'brand', 'normal_price', 'low_price', 'high_price',
-                  'oferta', 'categoria1', 'categoria2', 'sin_stock'] 
+                  'oferta', 'categoria1', 'categoria2', 'sin_stock']
         # Excluir: datetime, page, total_venta, Atributos (auto-populados)
 ```
 
@@ -151,7 +151,7 @@ class ProductoForm(forms.ModelForm):
 ```
 Django==5.2.7
 mssql-django==1.6          # SQL Server adapter
-pyodbc==5.2.0             # ODBC driver interface  
+pyodbc==5.2.0             # ODBC driver interface
 pandas==2.3.3             # Data analysis para predicciones
 numpy==2.3.4              # Cálculos ML
 python-dateutil==2.9.0.post0  # Date handling

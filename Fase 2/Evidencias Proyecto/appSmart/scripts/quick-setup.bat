@@ -17,7 +17,7 @@ if %errorlevel% equ 0 (
 ) else (
     echo [93m⚠️  Task no encontrado, usando setup manual...[0m
     echo.
-    
+
     REM Setup manual sin Task
     echo [96mVerificando Python...[0m
     python --version >nul 2>&1
@@ -28,7 +28,7 @@ if %errorlevel% equ 0 (
         exit /b 1
     )
     echo [92m✅ Python encontrado[0m
-    
+
     echo.
     echo [96mCreando entorno virtual...[0m
     if exist venv_smarterp (
@@ -36,23 +36,23 @@ if %errorlevel% equ 0 (
         rmdir /s /q venv_smarterp
     )
     python -m venv venv_smarterp
-    
+
     echo.
     echo [96mInstalando dependencias...[0m
     call venv_smarterp\Scripts\activate.bat
     pip install --upgrade pip
     pip install -r requirements\development.txt
-    
+
     echo.
     echo [96mConfigurando ambiente...[0m
     if not exist .env.development (
         copy .env.example .env.development >nul
     )
-    
+
     echo.
     echo [96mVerificando configuración...[0m
     python manage.py check
-    
+
     echo.
     echo [92m======================================[0m
     echo [92m  Setup Local Completado![0m

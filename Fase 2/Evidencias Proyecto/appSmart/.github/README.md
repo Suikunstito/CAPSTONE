@@ -49,7 +49,7 @@ productos/
 ### ✅ Arquitectura Actual (Modular por Dominio)
 ```
 users/         → Autenticación separada
-catalog/       → Productos y catálogo independiente  
+catalog/       → Productos y catálogo independiente
 inventory/     → Dashboard y lógica de inventario
 sales/         → Ventas y transacciones (escalable)
 ```
@@ -63,7 +63,7 @@ sales/         → Ventas y transacciones (escalable)
 
 ### 🧹 Mantenibilidad
 - **Separación de responsabilidades**: Cada app tiene un propósito claro
-- **Código más limpio**: Lógica de negocio en servicios reutilizables  
+- **Código más limpio**: Lógica de negocio en servicios reutilizables
 - **Imports explícitos**: Dependencias claras entre dominios
 
 ### 🔧 Extensibilidad
@@ -88,12 +88,12 @@ def calculate_inventory_value():
     # Lógica centralizada reutilizable
 ```
 
-### sales/services/orders.py  
+### sales/services/orders.py
 ```python
 def register_sale(producto_id, cantidad, precio):
     """Registrar venta con validaciones y transacciones"""
     # TODO(doc-sync): Implementar integración con inventory
-    
+
 def get_sales_summary(fecha_desde, fecha_hasta):
     """Resumen de ventas por período"""
     # Lógica de reportes reutilizable
@@ -105,7 +105,7 @@ def get_sales_summary(fecha_desde, fecha_hasta):
 | URL Original | Nueva Ubicación | Estado |
 |-------------|-----------------|---------|
 | `/` | `inventory/urls.py` → dashboard | ✅ Funcional |
-| `/productos/` | `catalog/urls.py` → CRUD | ✅ Funcional |  
+| `/productos/` | `catalog/urls.py` → CRUD | ✅ Funcional |
 | `/login/` | `users/urls.py` → auth | ✅ Funcional |
 
 ### Templates Reubicados
@@ -120,7 +120,7 @@ def get_sales_summary(fecha_desde, fecha_hasta):
 
 ### Modelos Redistribuidos
 - `Productos` → `catalog/models/products.py`
-- `Ventas` → `sales/models/sales.py`  
+- `Ventas` → `sales/models/sales.py`
 - `StgProductosRaw` → `inventory/models/movements.py`
 
 ### Vistas Separadas por Dominio
@@ -142,10 +142,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    
+
     # Apps SmartERP - Arquitectura modular
     'users',           # Autenticación
-    'catalog',         # Productos  
+    'catalog',         # Productos
     'inventory',       # Dashboard e inventario
     'sales',           # Ventas
 ]
@@ -171,7 +171,7 @@ urlpatterns = [
 - ✅ **NO migraciones** ejecutadas durante refactor
 
 ### Funcionalidad Original
-- ✅ Login/logout funcionando  
+- ✅ Login/logout funcionando
 - ✅ Dashboard con Chart.js intacto
 - ✅ CRUD productos completo
 - ✅ Mismas validaciones y formularios
@@ -191,7 +191,7 @@ python manage.py runserver
 ### Checklist Funcional
 - [ ] Login funciona → redirect a dashboard
 - [ ] Dashboard muestra estadísticas + gráfico
-- [ ] Lista productos carga correctamente  
+- [ ] Lista productos carga correctamente
 - [ ] Crear producto funciona
 - [ ] Editar producto funciona
 - [ ] Eliminar producto funciona
@@ -202,7 +202,7 @@ python manage.py runserver
 Ver `.github/instructions/` para guías detalladas:
 
 - **`backend.md`** - Modelos, vistas, URLs y servicios por app
-- **`data-model.md`** - Esquema SQL Server y convenciones  
+- **`data-model.md`** - Esquema SQL Server y convenciones
 - **`views-templates.md`** - Templates, herencia y patrones UI
 - **`dev-environment.md`** - Setup local y troubleshooting
 - **`testing.md`** - Testing no invasivo para modelos unmanaged

@@ -53,7 +53,7 @@ Para activar SQL Server:
    ```bash
    # Cambiar esto:
    FORCE_SQLITE=True
-   
+
    # Por esto:
    # FORCE_SQLITE=False
    ```
@@ -87,9 +87,9 @@ Starting development server at http://127.0.0.1:8000/
 
 ## 📊 Estado Actual del Servidor
 
-✅ **Servidor corriendo en:** http://127.0.0.1:8000/  
-✅ **Base de datos:** SQLite (`db_smarterp_local.sqlite3`)  
-✅ **Todas las vistas creadas:** users, catalog, inventory, sales  
+✅ **Servidor corriendo en:** http://127.0.0.1:8000/
+✅ **Base de datos:** SQLite (`db_smarterp_local.sqlite3`)
+✅ **Todas las vistas creadas:** users, catalog, inventory, sales
 ⚠️ **Migraciones pendientes:** 18 migraciones de Django (admin, auth, etc.)
 
 ### Aplicar migraciones de Django (opcional):
@@ -131,6 +131,6 @@ Esto creará las tablas de autenticación y admin de Django en SQLite.
 
 ---
 
-**Estado del Proyecto:** ✅ Completamente funcional con SQLite  
-**Último cambio:** Sistema de fallback automático implementado  
+**Estado del Proyecto:** ✅ Completamente funcional con SQLite
+**Último cambio:** Sistema de fallback automático implementado
 **Fecha:** 11 de Noviembre, 2025

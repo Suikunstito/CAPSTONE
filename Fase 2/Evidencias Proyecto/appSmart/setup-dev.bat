@@ -38,7 +38,7 @@ if errorlevel 1 (
 echo [3/4] Instalando dependencias de desarrollo...
 pip install -r requirements\development.txt
 if errorlevel 1 (
-    echo [ERROR] Error instalando dependencias de desarrollo  
+    echo [ERROR] Error instalando dependencias de desarrollo
     pause
     exit /b 1
 )

@@ -12,7 +12,7 @@ if errorlevel 1 (
     goto :local_dev
 )
 
-docker info >nul 2>&1  
+docker info >nul 2>&1
 if errorlevel 1 (
     echo [INFO] Docker daemon no esta corriendo, usando entorno local
     echo [TIP] Para usar Docker: Iniciar Docker Desktop

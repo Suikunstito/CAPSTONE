@@ -139,7 +139,7 @@ def register_sale(producto_id, cantidad, precio_unitario):
     """Registrar venta con validaciones transaccionales"""
     producto = Productos.objects.get(id_producto=producto_id)
     # Validaciones + creación de venta
-    
+
 def get_sales_summary(fecha_desde=None, fecha_hasta=None):
     """Resumen de ventas por período"""
     # Agregaciones de ventas por fechas
@@ -174,7 +174,7 @@ class ProductoForm(forms.ModelForm):
     class Meta:
         model = Productos
         fields = ['title', 'brand', 'normal_price', 'low_price', 'high_price',
-                  'oferta', 'categoria1', 'categoria2', 'sin_stock', 'ahorro', 
+                  'oferta', 'categoria1', 'categoria2', 'sin_stock', 'ahorro',
                   'ahorro_percent', 'kilo']
         # Excluidos: datetime, page, total_venta, Atributos
 ```
@@ -207,10 +207,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    
+
     # Apps SmartERP - Arquitectura modular por dominio
     'users',           # Autenticación y roles
-    'catalog',         # Productos y categorías  
+    'catalog',         # Productos y categorías
     'inventory',       # Inventario y dashboard
     'sales',           # Ventas y transacciones
 ]
@@ -290,12 +290,12 @@ python manage.py startapp           # ❌ Arquitectura ya establecida
 def get_low_stock_alert(threshold=5):
     """Productos con stock crítico"""
     # Implementar cuando se tengan movimientos reales
-    
+
 def calculate_stock_projection(days=30):
     """Proyección de stock futuro"""
     # Usar datos de ventas para predicciones
 
-# sales/services/orders.py - Extensiones  
+# sales/services/orders.py - Extensiones
 def get_monthly_sales_report():
     """Reporte mensual con gráficos"""
     # Integrar con servicios de inventory para cross-analytics

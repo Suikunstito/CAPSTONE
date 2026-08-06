@@ -2,9 +2,10 @@
 URLs del módulo Sales - Ventas y transacciones.
 """
 from django.urls import path
+
 from . import views
 
-app_name = 'sales'
+app_name = "sales"
 
 urlpatterns = [
     # Futuras rutas de ventas
